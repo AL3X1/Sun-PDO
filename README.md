@@ -1,1 +1,2 @@
-# pdolib
+# PDO Library [WIP]
+Library for easier using PDO. Work in progress...
