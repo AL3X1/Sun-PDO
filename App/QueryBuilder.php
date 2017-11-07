@@ -9,14 +9,38 @@ class QueryBuilder
 
     private $pdo;
 
+    private $host;
+
+    private $db_name;
+
+    private $user_name;
+
+    private $password;
+
     /**
      * QueryBuilder constructor.
+     * @param string $host
+     * @param string $db_name
+     * @param string $user_name
+     * @param string $password
      */
-    public function __construct()
+    public function __construct($host = "", $db_name = "", $user_name = "", $password = "")
     {
+        if (isset($host, $db_name, $user_name, $password)) {
+            $this->host = $host;
+            $this->db_name = $db_name;
+            $this->user_name = $user_name;
+            $this->password = $password;
+        } else {
+            $this->host = DB::$host;
+            $this->db_name = DB::$db_name;
+            $this->user_name = DB::$user_name;
+            $this->password = DB::$password;
+        }
+
         try {
-            $dsn = "mysql:host=" . DB::HOST . ";dbname=" . DB::NAME . ";charset=" . DB::DEFAULT_CHARSET;
-            $this->pdo = new \PDO($dsn, DB::USER, DB::PASSWORD, DB::DEFAULT_SETTINGS);
+            $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->db_name . ";charset=" . DB::DEFAULT_CHARSET;
+            $this->pdo = new \PDO($dsn, $this->user_name, $this->password, DB::DEFAULT_SETTINGS);
         } catch (\PDOException $e) {
             echo $e->getMessage();
         }
@@ -152,7 +176,8 @@ class QueryBuilder
      */
     public function query($sql)
     {
-        return $this->pdo->query($sql);
+        if ($this->pdo->query($sql))
+            return true;
     }
 
     public function debug($data, $var_dump = false)
