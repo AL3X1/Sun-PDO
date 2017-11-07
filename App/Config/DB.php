@@ -5,11 +5,11 @@ namespace App\config;
 class DB
 {
     // DSN
-    const HOST = "127.0.0.1";
-    const NAME = "test";
-    const USER = "root";
-    const PASSWORD = "";
-
+    public static $host       = "127.0.0.1";
+    public static $db_name    = "";
+    public static $user_name  = "";
+    public static $password   = "";
+    
     // Default DB configuration
     const DEFAULT_SETTINGS = [
         \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
