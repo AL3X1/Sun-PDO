@@ -146,9 +146,22 @@ class QueryBuilder
     }
 
 
-    public function delete($from, $where)
+    /**
+     * Удаление записи
+     * @param $from
+     * @param array $where
+     *
+     * прим. $sun->delete("users", ["username" => "Alex"])->execute();
+     * @return $this
+     */
+    public function delete($from, array $where)
     {
-        $this->sql = "DELETE FROM `$from` WHERE $where";
+        $params = "";
+        foreach ($where as $row => $value) {
+            $params .= "`$row`='$value'";
+        }
+
+        $this->sql = "DELETE FROM `$from` WHERE $params";
         return $this;
     }
 
