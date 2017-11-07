@@ -6,8 +6,8 @@ class DB
 {
     // DSN
     const HOST = "127.0.0.1";
-    const NAME = "";
-    const USER = "";
+    const NAME = "test";
+    const USER = "root";
     const PASSWORD = "";
 
     // Default DB configuration
@@ -17,4 +17,10 @@ class DB
         \PDO::ATTR_PERSISTENT => true
     ];
     const DEFAULT_CHARSET ="utf8";
+
+    // Миграции
+    protected function createMigration()
+    {
+
+    }
 }

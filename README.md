@@ -1,2 +1,7 @@
-# PDO Library [WIP]
-Library for easier using PDO. Work in progress...
+**SUN PDO**
+
+**Установка**
+
+Установка проста, нужно лишь добавить эти строки в файл:
+`require("App/autoloader.php");`
+`use App\QueryBulder;`

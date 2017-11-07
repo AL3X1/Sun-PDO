@@ -2,30 +2,47 @@
 namespace App;
 
 use App\Config\DB;
-use App\Core\QueryInterface;
 
-class QueryBuilder extends DB implements QueryInterface
+class QueryBuilder
 {
-
     private $sql;
-    private $bind;
 
+    private $pdo;
+
+    /**
+     * QueryBuilder constructor.
+     */
     public function __construct()
     {
         try {
-            $dsn = "mysql:host=" . DB::HOST. ";dbname=" . DB::NAME . ";charset=" . DB::DEFAULT_CHARSET;
+            $dsn = "mysql:host=" . DB::HOST . ";dbname=" . DB::NAME . ";charset=" . DB::DEFAULT_CHARSET;
             $this->pdo = new \PDO($dsn, DB::USER, DB::PASSWORD, DB::DEFAULT_SETTINGS);
         } catch (\PDOException $e) {
             echo $e->getMessage();
         }
     }
 
+    /**
+     * Выборка
+     * @param $select - оператор выбора
+     * @param $from
+     *
+     * прим. $query->select("*", "table1");
+     * Пример аналогичен SQL коду: SELECT * FROM `table1`
+     * @return $this
+     */
     public function select($select, $from)
     {
         $this->sql = "SELECT $select FROM `$from`";
         return $this;
     }
 
+    /**
+     * Оператор Where
+     * @param array $data - ассоциативный массив
+     * Прим. $query->select("*", "table1")->where(["name" => "Alex"])
+     * @return $this
+     */
     public function where(array $data)
     {
         foreach ($data as $key => $value) {
@@ -35,7 +52,15 @@ class QueryBuilder extends DB implements QueryInterface
         return $this;
     }
 
-    public function order($by, $type = "")
+    /**
+     * Оператор сортировки (ORDER BY)
+     * @param $by
+     * @param string $type - типы сортировки ASC, DESC
+     *
+     * Прим. $query->select("*", "table1")->where(["name" => "Alex"])->orderBy("id", "ASC");
+     * @return $this
+     */
+    public function orderBy($by, $type = "")
     {
         if ($type) {
             $this->sql .= " ORDER BY $by $type";
@@ -46,15 +71,31 @@ class QueryBuilder extends DB implements QueryInterface
         return $this;
     }
 
-    public function update($into, array $data)
+    /**
+     * Обновление данных
+     * @param $table
+     * @param array $data
+     *
+     * Прим. $query->update("table1", ["name" => "Alex1"]);
+     * @return $this
+     */
+    public function update($table, array $data)
     {
         foreach ($data as $key => $value) {
-            $this->sql = "UPDATE `$into` SET `$key` = '$value'";
+            $this->sql = "UPDATE `$table` SET `$key` = '$value'";
         }
 
         return $this;
     }
 
+    /**
+     * Вставка данных
+     * @param $into
+     * @param array $data
+     *
+     * Прим. $query->insert("table1", ["name" => "Alex"]);
+     * @return $this
+     */
     public function insert($into, array $data)
     {
         $params = "";
@@ -67,13 +108,33 @@ class QueryBuilder extends DB implements QueryInterface
         return $this;
     }
 
+    /**
+     * Лимит
+     * @param $number
+     *
+     * Прим. $query->select("*", "table1")->limit(10);
+     * @return $this
+     */
     public function limit($number)
     {
         $this->sql .= " LIMIT $number";
         return $this;
     }
 
-    public function send()
+
+    public function delete($from, $where)
+    {
+        $this->sql = "DELETE FROM `$from` WHERE $where";
+        return $this;
+    }
+
+    /**
+     * Выполнение запроса
+     *
+     * Прим. $query->select("*", "table1")->execute();
+     * @return \PDOStatement
+     */
+    public function execute()
     {
         $exec = $this->pdo->prepare($this->sql);
         $exec->execute();
@@ -81,20 +142,17 @@ class QueryBuilder extends DB implements QueryInterface
         return $exec;
     }
 
-    public function request($sql, $bind = false)
+    /**
+     * Запрос вручную
+     *
+     * @param $sql
+     *
+     * Прим. $select = $query->query("INSERT INTO `users` (username, email) VALUES ('Alex', 'test@gmail.com')")->execute();
+     * @return \PDOStatement
+     */
+    public function query($sql)
     {
-        if (!$bind) {
-            $this->pdo->query($sql);
-        } else {
-            $this->sql = $sql;
-            return $this;
-        }
-    }
-
-    public function bind(array $param)
-    {
-        $this->bind = $this->pdo->prepare($this->sql);
-        $this->bind->execute($param);
+        return $this->pdo->query($sql);
     }
 
     public function debug($data, $var_dump = false)
@@ -106,6 +164,5 @@ class QueryBuilder extends DB implements QueryInterface
             print_r($data);
         }
         echo "</pre>";
-        die();
     }
 }

@@ -6,16 +6,24 @@
  * Time: 15:47
  */
 
-require("App/loading.php");
+require("App/autoloader.php");
 
 use App\QueryBuilder;
 $query = new QueryBuilder();
 
 $arr = array(
-    "username" => "Alex123456",
-    "email" => "helloworld@gmail.com"
+    "username" => "Inozemtsev",
+    "email" => "inzmtsv.alx@gmail.com"
 );
 
 //$query->insert("users", $arr)->send();
-$select = $query->select("*", "users")->order("id", "DESC")->send()->fetchAll();
+//$select = $query->select("*", "users")->limit(2);
+$select = $query->select("*", "users")->execute()->fetchAll();
+$select = $query->query("INSERT INTO `users` (username, email) VALUES ('Alex', 'test@gmail.com')")->execute();
+
+//$query->insert("users", ["username" => "Alexxxxxx", "email" => "trololo@mail.ru"])->execute();
+//$query->delete("users", "username='Inozemtsev'")->execute();
+
+
 $query->debug($select);
+//$query->debug($delete);
