@@ -74,6 +74,12 @@ $sun->update("table", $data)->execute();
 $sun->select("*", "table")->limit(10)->execute();
 ```
 
+Запрос удаления:
+
+```
+$sun->delete("table", ["username" => "Alex"])->execute();
+```
+
 **4. Дополнительно**
 
 1. Вывод (fetch) данных
