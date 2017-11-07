@@ -16,6 +16,7 @@ use App\QueryBulder;
 $query = new QueryBuilder();
 ```
 **2. Конфигурация**
+
 Сконфигурировать библиотеку можно двумя способами:
 1. В Config/DB.php
 
@@ -28,6 +29,7 @@ $sun = new QueryBuilder($host, $db_name, $user_name, $password);
 ```
 
 **3. Использование**
+
 Простой запрос выборки:
 ```
 $sun->select("*", "table")->execute;
@@ -44,7 +46,7 @@ $sun->select("*", "table")->where($data)->execute;
 Запрос вставки:
 ```
 $data = [
-    "username"
+    "username" => "Alex"
 ];
-$sun->insert("table", )->execute();
+$sun->insert("table", $data)->execute();
 ```
