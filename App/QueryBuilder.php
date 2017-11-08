@@ -28,19 +28,19 @@ class QueryBuilder
     {
         if (isset($host, $db_name, $user_name, $password)) {
             $this->host = $host;
-            $this->db_name = $db_name;
-            $this->user_name = $user_name;
-            $this->password = $password;
+            $this->db_name = base64_encode($db_name);
+            $this->user_name = base64_encode($user_name);
+            $this->password = base64_encode($password);
         } else {
             $this->host = DB::$host;
-            $this->db_name = DB::$db_name;
-            $this->user_name = DB::$user_name;
-            $this->password = DB::$password;
+            $this->db_name = base64_encode(DB::$db_name);
+            $this->user_name =base64_encode( DB::$user_name);
+            $this->password = base64_encode(DB::$password);
         }
 
         try {
-            $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->db_name . ";charset=" . DB::DEFAULT_CHARSET;
-            $this->pdo = new \PDO($dsn, $this->user_name, $this->password, DB::DEFAULT_SETTINGS);
+            $dsn = "mysql:host=" . $this->host . ";dbname=" . base64_decode($this->db_name) . ";charset=" . DB::DEFAULT_CHARSET;
+            $this->pdo = new \PDO($dsn, base64_decode($this->user_name), base64_decode($this->password), DB::DEFAULT_SETTINGS);
         } catch (\PDOException $e) {
             echo $e->getMessage();
         }
